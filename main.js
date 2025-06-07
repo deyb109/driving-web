@@ -1,4 +1,3 @@
-
 // Set up the scene
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000)
@@ -6,42 +5,44 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-// Add light
+// Light
 const light = new THREE.DirectionalLight(0xffffff, 1)
 light.position.set(10, 20, 10)
 scene.add(light)
 
-// Add terrain (simple plane)
-const terrainGeometry = new THREE.PlaneGeometry(100, 100, 10, 10)
-const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22, wireframe: false })
+// Terrain
+const terrainGeometry = new THREE.PlaneGeometry(500, 500)
+const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x2c7a1a })
 const terrain = new THREE.Mesh(terrainGeometry, terrainMaterial)
 terrain.rotation.x = -Math.PI / 2
 scene.add(terrain)
 
-// Add car (a cube for now)
+// Car
 const carGeometry = new THREE.BoxGeometry(1, 1, 2)
-const carMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 })
+const carMaterial = new THREE.MeshStandardMaterial({ color: 0xff3333 })
 const car = new THREE.Mesh(carGeometry, carMaterial)
 car.position.y = 0.5
 scene.add(car)
 
-camera.position.set(0, 5, 10)
+// Camera follows behind the car
+camera.position.set(0, 5, -10)
 camera.lookAt(car.position)
 
-// Controls
+// Movement
+let speed = 0
+let angle = 0
 const keys = {}
+
 document.addEventListener("keydown", (e) => keys[e.key.toLowerCase()] = true)
 document.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false)
 
 function animate() {
   requestAnimationFrame(animate)
 
-  if (keys["w"]) car.position.z -= 0.1
-  if (keys["s"]) car.position.z += 0.1
-  if (keys["a"]) car.position.x -= 0.1
-  if (keys["d"]) car.position.x += 0.1
+  // Speed control
+  if (keys["w"]) speed = Math.min(speed + 0.01, 0.2)
+  else if (keys["s"]) speed = Math.max(speed - 0.01, -0.1)
+  else speed *= 0.98  // Friction
 
-  renderer.render(scene, camera)
-}
-
-animate()
+  // Steering
+  if (keys["a"]) angle +=
